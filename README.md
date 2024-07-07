@@ -1,3 +1,8 @@
+
+<p align="center">
+  <img src="docs/images/technology-disruption.svg" width="300" title="Technology Disruption">
+</p>
+
 # ValueMPT: Value Stock Selection with MPT Portfolio Optimization
 
 ValueMPT is an intelligent multi-agent system that combines Benjamin Graham's value investing principles for stock selection with Modern Portfolio Theory (MPT) for portfolio optimization.
