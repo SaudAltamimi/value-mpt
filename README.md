@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="docs/images/technology-disruption.svg" width="300" title="Technology Disruption">
+  <img src="docs/images/technology-disruption.svg" width="200" title="Technology Disruption">
 </p>
 
 # ValueMPT: Value Stock Selection with MPT Portfolio Optimization
