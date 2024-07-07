@@ -5,7 +5,7 @@
 
 # ValueMPT: Value Stock Selection with MPT Portfolio Optimization
 
-ValueMPT is an intelligent multi-agent system that combines [Benjamin Graham's value investing principles](https://www.investopedia.com/articles/basics/07/grahamprinciples.asp) for stock selection with Modern Portfolio Theory (MPT) for portfolio optimization.
+ValueMPT is an intelligent multi-agent system that combines [Benjamin Graham's value investing principles](https://www.investopedia.com/articles/basics/07/grahamprinciples.asp) for stock selection with [Modern Portfolio Theory (MPT)](https://www.investopedia.com/terms/m/modernportfoliotheory.asp) for portfolio optimization.
 
 ## Project Overview
 
