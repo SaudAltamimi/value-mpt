@@ -1,51 +1,66 @@
-import pandas as pd
+from MPT import Optimizer
 import numpy as np
 import matplotlib.pyplot as plt
-from MPT import calculate_expected_return, calculate_standard_deviation, calculate_correlation_matrix, generate_efficient_frontier, optimal_portfolio_selector
 
-# Load data
-df = pd.read_csv('../data/stocks.csv')
-df.dropna(inplace=True)
-if 'Date' in df.columns:
-    df['Date'] = pd.to_datetime(df['Date'])
-    df.set_index('Date', inplace=True)
+tickers = ['2222.SR', '2010.SR', '1120.SR', '8230.SR']
+years = 5
+risk_tolerance = 0.5
 
+# Test the optimal_portfolio_selector method with different regularization coefficients
+# coefficients = [0.1, 0.3, 0.5]
 
-daily_returns = df.pct_change().dropna()
-expected_annual_returns = calculate_expected_return(daily_returns)
-cov_matrix = daily_returns.cov() * 252
+# for coeff in coefficients:
+#     optimizer = Optimizer(tickers, years, risk_tolerance)
+#     optimal_return, optimal_weights, optimal_risk = optimizer.optimal_portfolio_selector(coeff)
+#     print(f"Regularization Coefficient: {coeff}")
+#     print(f"Optimal Portfolio Return: {optimal_return}")
+#     print(f"Optimal Portfolio Weights: {optimal_weights}")
+#     print(f"Optimal Portfolio Risk (Standard Deviation): {optimal_risk}")
 
-# Calculate Standard Deviation
-annualized_std_dev = calculate_standard_deviation(daily_returns)
-print("Annualized Standard Deviations:")
-print(annualized_std_dev)
+# Instance of the optimizer class
+mpt = Optimizer(tickers, years, risk_tolerance)
 
-# Calculate Correlation Matrix
-correlation_matrix = calculate_correlation_matrix(daily_returns)
-print("Correlation Matrix:")
-print(correlation_matrix)
+# Find the optimal portfolio
+optimal_return, optimal_weights, optimal_risk = mpt.optimal_portfolio_selector()
 
-# Generate Efficient Frontier
-returns, risks = generate_efficient_frontier(expected_annual_returns.values, cov_matrix)
+print("Optimal portfolio return:", optimal_return)
+print("Optimal portfolio weights:", optimal_weights)
+print("Optimal portfolio risk (Standard deviation):", optimal_risk)
 
-# Plot Efficient Frontier
-plt.figure(figsize=(10, 7))
-plt.plot(risks, returns, marker='o', linestyle='-')
-plt.title('Efficient Frontier')
-plt.xlabel('Volatility (Risk)')
+# Sharpe ratio
+risk_free_rate = 0.03  # For a rate of 3%
+sharpe_ratio = (optimal_return - risk_free_rate) / optimal_risk
+print("Sharpe ratio:", sharpe_ratio)
+
+# Efficient frontier
+returns = mpt.get_returns().values
+cov_matrix = mpt.get_cov_matrix().values
+num_portfolios = 10000
+results = np.zeros((3, num_portfolios))
+
+for i in range(num_portfolios):
+    weights = np.random.random(len(tickers))
+    weights /= np.sum(weights)
+    portfolio_return = np.dot(weights, returns)
+    portfolio_variance = np.dot(weights.T, np.dot(cov_matrix, weights))
+    portfolio_risk = np.sqrt(portfolio_variance)
+    sharpe_ratio = (portfolio_return - risk_free_rate) / portfolio_risk
+    results[0, i] = portfolio_return
+    results[1, i] = portfolio_risk
+    results[2, i] = sharpe_ratio
+
+# Efficient frontier
+plt.figure(figsize=(10, 6))
+plt.scatter(results[1, :], results[0, :], c=results[2, :], cmap='viridis')
+plt.colorbar(label='Sharpe Ratio')
+plt.scatter(optimal_risk, optimal_return, color='red', marker='*', s=200)  # Highlight the optimal portfolio
+plt.xlabel('Risk (Standard Deviation)')
 plt.ylabel('Return')
-plt.grid(True)
+plt.title('Efficient Frontier')
 plt.show()
 
-
-# Implement Optimal Portfolio Selector
-risk_tolerance = 1  # 1 being the highest risk tolerance
-optimal_weights = optimal_portfolio_selector(expected_annual_returns.values, cov_matrix, risk_tolerance)
-
-# Display the optimal weights with stock names
-stock_names = daily_returns.columns
-optimal_weights_with_names = dict(zip(stock_names, optimal_weights))
-print(optimal_weights_with_names)
-
-max_weight_stock = max(optimal_weights_with_names, key=optimal_weights_with_names.get)
-print(f"The most optimal stock with the highest weight is: {max_weight_stock}")
+# Rank the top 3 stocks with the highest weights
+top_indices = np.argsort(optimal_weights)[-3:][::-1]  # Top 3 weights in descending order
+print("Top 3 Stocks with the highest weights:")
+for i in top_indices:
+    print(f"Ticker: {tickers[i]}, Weight: {optimal_weights[i]*100 :.2f}%")

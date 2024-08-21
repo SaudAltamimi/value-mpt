@@ -1,41 +1,48 @@
-import pandas as pd
 import numpy as np
 import cvxpy as cp
+from ticker import Ticker
 
-def calculate_expected_return(daily_returns):
-    return daily_returns.mean() * 252
+class Optimizer:
+    def __init__(self, tickers, years, risk_tolerance):
+        self.tickers = tickers
+        self.years = years
+        self.risk_tolerance = risk_tolerance
+        self.ticker_data = Ticker(tickers, years)
+        self.returns = self.ticker_data.get_returns().mean() * 252
+        self.cov_matrix = self.ticker_data.get_returns().cov() * 252
 
-def calculate_standard_deviation(daily_returns):
-    return daily_returns.std() * np.sqrt(252)
+    def optimal_portfolio_selector(self):
+        num_assets = len(self.tickers)
+        returns = self.returns.values
+        cov_matrix = self.cov_matrix.values
 
-def calculate_correlation_matrix(daily_returns):
-    return daily_returns.corr()
-
-def generate_efficient_frontier(expected_returns, cov_matrix, num_points=100):
-    num_assets = len(expected_returns)
-    returns = np.linspace(expected_returns.min(), expected_returns.max(), num_points)
-    risks = []
-
-    for return_target in returns:
+        # Define the optimization variables
         weights = cp.Variable(num_assets)
-        portfolio_return = expected_returns @ weights
-        portfolio_variance = cp.quad_form(weights, cov_matrix)
-        objective = cp.Minimize(portfolio_variance)
-        constraints = [cp.sum(weights) == 1, weights >= 0, portfolio_return >= return_target]
-        problem = cp.Problem(objective, constraints)
-        problem.solve()
-        risks.append(np.sqrt(portfolio_variance.value))
+        portfolio_return = cp.sum(cp.multiply(returns, weights))
+        portfolio_risk = cp.quad_form(weights, cov_matrix)
 
-    return returns, risks
+        # The sum of the first two weights is less than or equal to 0.6
+        constraints = [cp.sum(weights) == 1, weights >= 0, cp.sum(weights[:2]) <= 0.6]
 
-def optimal_portfolio_selector(expected_returns, cov_matrix, risk_tolerance):
-    num_assets = len(expected_returns)
-    weights = cp.Variable(num_assets)
-    portfolio_return = expected_returns @ weights
-    portfolio_variance = cp.quad_form(weights, cov_matrix)
-    objective = cp.Maximize(portfolio_return - risk_tolerance * portfolio_variance)
-    constraints = [cp.sum(weights) == 1, weights >= 0]
-    problem = cp.Problem(objective, constraints)
-    problem.solve()
+        # To encourage diversification in the portfolio
+        regularization = cp.sum_squares(weights - (1 / num_assets))
+
+        # # Objective function, maximize return while minimizing risk and encouraging diversification (After testing 0.5 was the closest to the optimal)
+        objective = cp.Maximize(portfolio_return - self.risk_tolerance * portfolio_risk - 0.5 * regularization)
+
+
+        prob = cp.Problem(objective, constraints)
+        prob.solve()
+
+        optimal_weights = weights.value
+        optimal_return = portfolio_return.value
+        optimal_risk = np.sqrt(portfolio_risk.value)
+
+        return optimal_return, optimal_weights, optimal_risk
     
-    return weights.value
+
+    def get_returns(self):
+        return self.returns
+    
+    def get_cov_matrix(self):
+        return self.cov_matrix
