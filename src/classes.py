@@ -1,4 +1,7 @@
-from imports import *
+import pandas as pd
+import numpy as np
+import yfinance as yf
+from datetime import datetime, timedelta
 
 #Dummy variables
 stock_ticker = '1120.SR' 
