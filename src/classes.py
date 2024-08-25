@@ -3,10 +3,6 @@ import numpy as np
 import yfinance as yf
 from datetime import datetime, timedelta
 
-#Dummy variables
-stock_ticker = '1120.SR' 
-market_ticker = '^TASI.SR'
-
 
 class RiskAnalyzer:
 
