@@ -1,6 +1,7 @@
 import numpy as np
 import cvxpy as cp
-from ticker import Ticker
+from valuempt.src.value_mpt.data.ticker import Ticker
+
 
 class Optimizer:
     def __init__(self, tickers, years, risk_tolerance):

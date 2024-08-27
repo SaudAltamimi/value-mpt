@@ -15,5 +15,5 @@ class Ticker:
             data = self.data['Adj Close']
         else:
             data = self.data['Close']
-        returns = data.pct_change().dropna()
+        returns = data.pct_change(fill_method=None).dropna()
         return returns

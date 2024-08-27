@@ -1,4 +1,4 @@
-from MPT import Optimizer
+from valuempt.src.value_mpt.optimizer.MPT import Optimizer
 import numpy as np
 import matplotlib.pyplot as plt
 
