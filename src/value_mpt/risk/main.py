@@ -2,11 +2,11 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 from datetime import datetime, timedelta
-from classes import RiskAnalyzer, stock_ticker, market_ticker
+from risk_analyzer_class import RiskAnalyzer, stock_ticker, market_ticker
 
 # Generate risk assessment report
 def generate_report():
-    analyzer = RiskAnalyzer(stock_ticker, market_ticker )
+    analyzer = RiskAnalyzer(stock_ticker, market_ticker)
     beta = analyzer.calculate_beta()
     systematic_risk = analyzer.calculate_systematic_risk()
     unsystematic_risk = analyzer.calculate_unsystematic_risk()

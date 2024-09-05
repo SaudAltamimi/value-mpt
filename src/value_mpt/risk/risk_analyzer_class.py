@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 class RiskAnalyzer:
 
     # Initizialize with stock and market tickers, and lookbback period (set to two years by default)
-    def __init__(self, stock_ticker, market_ticker , lookback_days=2*365):
+    def __init__(self, stock_ticker, market_ticker, lookback_days=2*365):
         self.stock_ticker = stock_ticker
         self.market_ticker = market_ticker
         self.lookback_days = lookback_days
