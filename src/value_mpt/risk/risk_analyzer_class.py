@@ -3,14 +3,13 @@ import numpy as np
 import yfinance as yf
 from datetime import datetime, timedelta
 
-
 class RiskAnalyzer:
 
     # Initizialize with stock and market tickers, and lookbback period (set to two years by default)
-    def __init__(self, stock_ticker, market_ticker, lookback_days=2*365):
+    def __init__(self, stock_ticker, market_ticker):
         self.stock_ticker = stock_ticker
         self.market_ticker = market_ticker
-        self.lookback_days = lookback_days
+        self.lookback_years = 2
         self.stock_returns = None
         self.market_returns = None
         self.start_date = None
@@ -19,7 +18,7 @@ class RiskAnalyzer:
     # Fetch historical prices and compute daily returns
     def get_returns(self, ticker):
         self.end_date = datetime.now().date()
-        self.start_date = self.end_date - timedelta(days = self.lookback_days)
+        self.start_date = self.end_date - timedelta(days = self.lookback_years * 365)
         prices = yf.download(ticker, start=self.start_date, end=self.end_date)['Adj Close']
         returns = prices.pct_change().dropna()
         return returns
