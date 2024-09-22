@@ -1,6 +1,6 @@
 from typing import Dict
 import yfinance as yf
-from src.data.data_extraction.fetching_data_module import FinancialData
+from ...data import FinancialData
 
 class ValuationMetrics:
     """

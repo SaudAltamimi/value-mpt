@@ -35,7 +35,17 @@ The system consists of several AI agents working in two main phases:
 - Risk assessment and management
 - Automated portfolio rebalancing suggestions
 
-
+## Development
+For development, you can install the package with additional testing dependencies:
+```bash
+python -m venv venv
+```
+```bash
+source venv/bin/activate # On Windows, Use `venv\Scripts\activate`
+```
+```bash
+pip install -e ".[dev]"
+```
 ## To-Do List
 
 ### Phase 1: Value Stock Selection

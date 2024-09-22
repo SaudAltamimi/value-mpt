@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "value-mpt-ai"
+version = "0.1.0"
+description = "ValueMPT is an intelligent multi-agent system that combines [Benjamin Graham's value investing principles](https://www.investopedia.com/articles/basics/07/grahamprinciples.asp) for stock selection with [Modern Portfolio Theory (MPT)](https://www.investopedia.com/terms/m/modernportfoliotheory.asp) for portfolio optimization."
+authors = [{name = "Sequential Lab"}]
+license = {text = "MIT"}
+requires-python = ">=3.7"
+dependencies = [
+    "pandas==2.2.2",
+    "matplotlib==3.9.2",
+    "yfinance==0.2.43",
+    "cvxpy==1.5.3",
+    "python-dotenv==1.0.1",
+    "scipy==1.14.1",
+    "chainlit==1.2.0",
+    "crewai==0.55.2",
+    "langchain",
+    "langchain-core",
+    "langchain-community",
+    "langchain-anthropic"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src/value-mpt-ai"]

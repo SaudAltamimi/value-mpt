@@ -1,6 +1,6 @@
 import numpy as np
 import cvxpy as cp
-from valuempt.src.value_mpt.data.ticker import Ticker
+from ..data import Ticker
 
 
 class Optimizer:
@@ -23,13 +23,21 @@ class Optimizer:
         portfolio_risk = cp.quad_form(weights, cov_matrix)
 
         # The sum of the first two weights is less than or equal to 0.6
-        constraints = [cp.sum(weights) == 1, weights >= 0, cp.sum(weights[:2]) <= 0.6]
+        constraints = [
+            cp.sum(weights) == 1, 
+            weights >= 0, 
+            cp.sum(weights[:2]) <= 0.6
+        ]
 
         # To encourage diversification in the portfolio
         regularization = cp.sum_squares(weights - (1 / num_assets))
 
         # # Objective function, maximize return while minimizing risk and encouraging diversification (After testing 0.5 was the closest to the optimal)
-        objective = cp.Maximize(portfolio_return - self.risk_tolerance * portfolio_risk - 0.5 * regularization)
+        objective = cp.Maximize(
+            (portfolio_return)
+            - (self.risk_tolerance * portfolio_risk)
+            - (0.5 * regularization)
+        )
 
 
         prob = cp.Problem(objective, constraints)

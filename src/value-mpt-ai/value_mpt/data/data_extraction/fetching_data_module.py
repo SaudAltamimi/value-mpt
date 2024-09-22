@@ -5,7 +5,14 @@ import requests
 from bs4 import BeautifulSoup
 import yfinance as yf
 
+def _saudi_fetch_stock_tickers():
 
+    list_saudi=[]
+    with open('Saudi_Stock_Active_Tickers.csv','r') as file:
+        content = file.read()
+        list_saudi = content.split('\n')
+
+    return list_saudi
 
 
 class FinancialData:
@@ -67,7 +74,11 @@ class FinancialData:
         current_time = datetime.now()
         three_months_ago = current_time - timedelta(days=90)
         
-        filtered_news = [news for news in stock_links if datetime.fromtimestamp(news['providerPublishTime']) >= three_months_ago]
+        filtered_news = [
+             news for news in stock_links 
+             if datetime.fromtimestamp(news['providerPublishTime']) >= three_months_ago
+        ]
+        
         news_text=''
         for news in filtered_news:
                 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
